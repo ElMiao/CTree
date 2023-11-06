@@ -19,12 +19,13 @@ void showHelp(){
 
 struct tree{
 	struct tree* parent;
-	struct tree* branch1;
-	struct tree* branch2;
+	struct tree* branches;
+	int nBranches;
 	int dept;
 	int value;
 
 };
+
 
 
 
@@ -35,23 +36,18 @@ struct tree* makeTree(int value){
 	t->parent=NULL;
 	t->dept=0;
 	t->value=0;
+	t->branches=NULL;
+	t->nBranches=0;
 	return t;
 
 }
 
 
+
 void showTreeInfo(struct tree* t){
 
 	printf("TREE INFO:\nDEPT: %d\nVALUE: %d\n",t->dept,t->value);
-	printf("BRANCH1: ");
-	if(!t->branch1)
-		printf("NOT ");
-	printf("DEFINED\n");
-	printf("BRANCH2: ");
-	if(!t->branch2)
-		printf("NOT ");
-	printf("DEFINED\n");
-
+	printf("NUMBER OF BRANCHES: %d\n",t->nBranches);
 
 }
 
@@ -69,13 +65,10 @@ void moveToTree(struct tree** tr,int direction){
 	if(direction==0&& t->parent!=NULL){
 		*tr=t->parent;
 	}
-	else if (direction==1 && t->branch1!=NULL){
+	else if (direction <  t->nBranches){
 
-		*tr=t->branch1;
+		*tr=&t->branches[direction-1];
 
-	}
-	else if (direction==2 && t->branch2!=NULL){
-		*tr=t->branch2;
 	}
 	else{
 		printf("Direction not allowed: %d\n",direction);
@@ -83,79 +76,43 @@ void moveToTree(struct tree** tr,int direction){
 	}
 	printf("Moved successfully\n");
 
-
 }
 
 int getDirection(){
 
 	int tmp;
 	printf("Press \"0\" to go to the parent tree\n"
-	"Press \"1\" to go to the first tree\n"
-	"Press \"2\" to go to the second tree\n");
+	"Press any number to go to the desired tree\n");
 	printf("Eneter the number: ");
 	scanf("%d",&tmp);
 	return tmp;
 
 }
-struct tree*  makeBranch(int dept){
 
-	struct tree* t=(struct tree *) malloc(sizeof(struct tree));
-	t->dept=dept;
-	t->value=-1;
-	return t;
-
-
-}
 void addTree(struct tree* t){
 	
-	
-
-
-	printf("SELECT WICH BRANCH YOU WANT TO USE:\n");
-	printf("BRANCH1: ");
-	if(t->branch1)
-		printf("UNAVAIBLE\n");
-	else
-		printf("AVAILABLE\n");
-	printf("BRANCH2: ");
-	if(t->branch2)
-		printf("UNAVAILABLE\n");
-	else
-		printf("AVAILABLE\n");
-	int sel;
-	scanf("%d",&sel);
-	if(sel==1 && !t->branch1)	
-		t->branch1=makeBranch(t->dept+1);
-
-	else if(sel==2 && !t->branch2)	
-		t->branch2=makeBranch(t->dept+1);
-	else{
-		printf("SELECTION %d NOT AVAIBLE\n",sel);
-		return;	
-	}
-
-
-	struct tree* m;
-	if(sel==1){
+	if(t->nBranches==0){//if the tree hasn't branches
 		
-		m=t->branch1;
-	}else
-		m=t->branch2;
-	m->parent=t;
-	printf("BRANCH ADDED SUCCESSFULLY\n");
-	
-	printf("DO YOU WANT TO SET THE VALUE OF THE NEW BRANCH NOW?(y/n): ");
-	char op;
-	scanf(" %c",&op);
-	if(op=='y'){
-		int tmp;
-		printf("Enter the value: ");
-		scanf("%d",&tmp);
-		m->value=tmp;
+		t->branches=(struct tree*)malloc(sizeof(*t));
+		t->nBranches=1;
+		
+
+
+	}else{
+		t->nBranches++;
+		t->branches=realloc(t->branches,sizeof(*t)*t->nBranches);
+
+
 	}
-
-
-
+	struct tree* newTree; newTree=&t->branches[t->nBranches-1]; 
+	newTree->parent=t;
+	
+	newTree->value=0;
+	
+	newTree->branches=NULL;
+	newTree->nBranches=0;
+	newTree->dept=t->dept+1;
+	
 
 }
 
@@ -193,7 +150,6 @@ int main(){
 				printf("Exit from the menu\n");
 				break;
 			case 'a':
-				printf("Not implemented yet\n");
 				addTree(t);
 				break;
 			default:
