@@ -12,6 +12,7 @@ void showHelp(){
 	"\"v\":change the value of the current tree\n"
 	"\"m\":move to a selected tree\n"
 	"\"a\":to add a tree to a branch of the current tree\n"
+	"\"r\":remove the desired branch\n"
 	"\"q\":quit from menu\n\n\n");
 
 
@@ -30,7 +31,15 @@ int getDirection(){
 
 }
 
+int getBranch(){
+	
+	int tmp;
+	printf("Insert the branch that you want to delete (number of the desired branch): ");
+	scanf("%d",&tmp);
 
+	return tmp;
+
+}
 
 int main(){
 	
@@ -67,6 +76,9 @@ int main(){
 				break;
 			case 'a':
 				addTree(t);
+				break;
+			case 'r':
+				removeBranch(t,getBranch());
 				break;
 			default:
 				printf("Option not recognized.\nPress\"h\" to see the available commands.");
