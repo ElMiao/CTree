@@ -65,6 +65,32 @@ void changeValue(struct tree* t,int value){
 
 }
 
+
+void removeBranch(struct tree* t, int n){
+
+	
+	if(n>=t->nBranches){
+		printf("ERROR: branch not defined: %d, there are only %d branches in the current tree\n",n,t->nBranches);
+		return;
+	}
+	
+	for(int i=n-1;i<t->nBranches-1;i++){
+	
+		t->branches[i]=t->branches[i+1];
+		
+	}
+
+
+	t->nBranches--;
+	t->branches=(struct tree*)realloc(t->branches,sizeof(t)*t->nBranches);
+
+
+
+
+}
+
+
+
 void moveToTree(struct tree** tr,int direction){
 	
 	struct tree* t= *tr;
@@ -72,7 +98,7 @@ void moveToTree(struct tree** tr,int direction){
 	if(direction==0&& t->parent!=NULL){
 		*tr=t->parent;
 	}
-	else if (direction <  t->nBranches){
+	else if (direction-1 <  t->nBranches){
 
 		*tr=&t->branches[direction-1];
 
